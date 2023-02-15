@@ -71,6 +71,7 @@ class Instrument(object):
         self.bright_limit = kwargs.get('bright_limit', kwargs)
         self.xbright_limit = kwargs.get('xbright_limit', kwargs)
         self.filter = None
+        self.scastart = kwargs.get('scastart', 1)
         self.detectors = None
         self.instrument = kwargs.get('instrument', 'wfi')
         self.background_value = SelectParameter('background', kwargs)
@@ -78,9 +79,11 @@ class Instrument(object):
         self.CENTRAL_OFFSET = (0., 0., 0.)
 
         # Adjust # of detectors based on keyword:
+        msg = "JT was here! scastart = {}, with {} "
+        self._log('info', msg.format(self.scastart, self.scastart-1))
         n_detectors = int(kwargs.get('detectors', len(self.DETECTOR_OFFSETS)))
-        self.DETECTOR_OFFSETS = self.DETECTOR_OFFSETS[:n_detectors]
-        self.OFFSET_NAMES = self.OFFSET_NAMES[:n_detectors]
+        self.DETECTOR_OFFSETS = self.DETECTOR_OFFSETS[self.scastart-1:self.scastart-1+n_detectors]
+        self.OFFSET_NAMES = self.OFFSET_NAMES[self.scastart-1:self.scastart-1+n_detectors]
         if hasattr(self, "N_OFFSET"):
             self.CENTRAL_OFFSET = self.N_OFFSET[n_detectors]
         msg = "{} with {} detectors. Central offset {}"
