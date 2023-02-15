@@ -60,6 +60,7 @@ class ObservationModule(object):
         self.custom_background = obs.get('custom_background', 0.)
         self.id = obs.get('observations_id', '0')
         self.detectors = int(obs.get('detectors', 1))
+        self.scastart = int(obs.get('scastart', 1))
         self.excludes = obs.get('excludes', [])
         self.exptime = float(obs.get('exptime', 1.))
         self.bright_limit = obs.get('bright_limit', 14.)
