@@ -82,7 +82,7 @@ def create_catalogs(streamfile, scanumber=1, rotangle=0., offset_ra=0., offset_d
                     'imf': 'salpeter', 'alpha': -2.35,
                     'binary_fraction': 0.1,
                     'distribution': 'uniform', 'clustered': False,
-                    'radius': 20.0, 'radius_units': 'arcsec',
+                    'radius': line_of_stars['r_split'], 'radius_units': 'arcsec',
                     'distance_low': 0.1, 'distance_high': 0.11, #<---- these distances are kpc
                     'offset_ra': line_of_stars['xx']*3600., 'offset_dec': line_of_stars['yy']*3600.
                    }
