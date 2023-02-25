@@ -13,7 +13,8 @@ import matplotlib.pyplot as plt
 
 def gather_tables(sca_number):
 
-    wildcard = 'SCA'+str(sca_number)+'/master_star_table_sca'+sca_number+'.fits'
+    #wildcard = 'SCA'+str(sca_number)+'/master_star_table_sca'+sca_number+'.fits'
+    wildcard = 'SCA??/master_star_table_sca?.fits'
     print(wildcard)
     filelist = glob.glob(wildcard)
     print("There are : ", len(filelist), " files in the pile.")
@@ -40,6 +41,8 @@ def gather_tables(sca_number):
 def run_one_sca(sca_number, filter, suffix, nstars):
 
     wildcard = 'SCA'+str(sca_number) + '/sim_stars_????????_SCA'+str(sca_number)+'.fits'
+    wildcard = 'SCA'+str(sca_number) + '/master*.fits'
+    wildcard = 'SCA*/master_star_table_sca*.fits'
     print(wildcard)
 
     filelist = glob.glob(wildcard)
@@ -79,7 +82,7 @@ def run_one_sca(sca_number, filter, suffix, nstars):
             print("We are at file:",i+1," out of ", nn)
 
     psf_file = obm.addError()
-    fits_file, mosaic_file, params = obm.finalize(mosaic=False)
+    fits_file, mosaic_file, params = obm.finalize(mosaic=True)
 
 
 

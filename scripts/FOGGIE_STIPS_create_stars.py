@@ -81,7 +81,7 @@ def create_catalogs(streamfile, scanumber=1, rotangle=0., offset_ra=0., offset_d
                     'z_low': line_of_stars['metallicity'], 'z_high': line_of_stars['metallicity'],
                     'imf': 'salpeter', 'alpha': -2.35,
                     'binary_fraction': 0.1,
-                    'distribution': 'uniform', 'clustered': False,
+                    'distribution': 'regpow', 'scale':1.001, 'clustered': False,
                     'radius': line_of_stars['r_split'], 'radius_units': 'arcsec',
                     'distance_low': 0.1, 'distance_high': 0.11, #<---- these distances are kpc
                     'offset_ra': line_of_stars['xx']*3600., 'offset_dec': line_of_stars['yy']*3600.
