@@ -249,12 +249,13 @@ class SceneModule(object):
                     t['absolute'] = Column(data=rates, unit=u.mag, format="%14.6e")
                     t['apparent'] = Column(data=apparent_rates, unit=u.mag, format="%12.4e")
                     data_table.write_chunk(t)
+                    table_to_return = t # JT Aug 24 2022
                     del t
                 datasets += 1
                 total += num_stars
 
         self._log("info", "Done creating catalogue")
-        return outList
+        return outList, table_to_return 
 
     def CreateGalaxies(self, gals, id=0):
         """

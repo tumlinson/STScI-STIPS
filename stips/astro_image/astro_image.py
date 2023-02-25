@@ -649,16 +649,28 @@ class AstroImage(object):
         are_bright = np.any(mags < self.bright_limit)
         are_xbright = np.any(mags < self.xbright_limit)
         # If so, generate extra ePSF arrays
-        if are_bright:
-            bright_psf_array, bright_psf_middle = self.make_epsf_array('bright')
-            bright_boxsize = np.floor(bright_psf_middle)/PSF_UPSCALE
-        if are_xbright:
-            xbright_psf_array, xbright_psf_middle = self.make_epsf_array('xbright')
-            xbright_boxsize = np.floor(xbright_psf_middle)/PSF_UPSCALE
+#        if are_bright:
+# generate these no matter what JT 
+        bright_psf_array, bright_psf_middle = self.make_epsf_array('bright')
+        bright_boxsize = np.floor(bright_psf_middle)/PSF_UPSCALE
+#        if are_xbright:
+# generate these no matter what JT 
+        xbright_psf_array, xbright_psf_middle = self.make_epsf_array('xbright')
+        xbright_boxsize = np.floor(xbright_psf_middle)/PSF_UPSCALE
+
+        # JT this will loop over every star in the list to place a unque interpolated PSF
+        # we are therefore doing this interpolation *millions* of times. 
+
+        # get only one resampled PSF to apply everywhere on this SCA - note this is OUTSIDE the loop below  
+        # just use the middle of the SCA, so xpix = ypix = 2000 
+        epsf_normal = interpolate_epsf(2000., 2000., psf_array, image_size)  # JT this function interpolates over the 9 field points in psf_array 
+        epsf_bright = interpolate_epsf(2000., 2000., bright_psf_array, image_size)  # JT this function interpolates over the 9 field points in psf_array 
+        epsf_xbright = interpolate_epsf(2000., 2000., xbright_psf_array, image_size)  # JT this function interpolates over the 9 field points in psf_array 
 
         for k, (xpix, ypix, flux, mag) in enumerate(zip(xs, ys, fluxes, mags)):
-            self.addHistory("Adding point source {} at {},{}".format(k+1, xpix, ypix))
-            self._log("info", "Adding point source {} to AstroImage {},{}".format(k+1, xpix, ypix))
+            if ( ((k+1) % 1000) < 1):  # JT here 
+               self.addHistory("Adding point source {} at {},{}".format(k+1, xpix, ypix))
+               self._log("info","Adding point source {} to AstroImage {},{}".format(k+1, xpix, ypix))
 
             if not self.has_psf:  # just add point source
                 self._log("warning", "No PSF found, adding as point source")
@@ -667,18 +679,18 @@ class AstroImage(object):
 
             # Create interpolated ePSF from input PSF files
             if mag > self.bright_limit:
-                epsf = interpolate_epsf(xpix, ypix, psf_array, image_size)
-                self.data = place_source(xpix, ypix, flux, self.data, epsf, boxsize=boxsize, psf_center=psf_middle)
+                #epsf = interpolate_epsf(xpix, ypix, psf_array, image_size)
+                self.data = place_source(xpix, ypix, flux, self.data, epsf_normal, boxsize=boxsize, psf_center=psf_middle)
+                #self._log("info", "Placing Normal Source with mag = {}".format(mag))
             elif (self.xbright_limit < mag < self.bright_limit):
-                self.addHistory("Placing Bright Source with mag = {}".format(mag))
-                self._log("info", "Placing Bright Source with mag = {}".format(mag))
-                epsf = interpolate_epsf(xpix, ypix, bright_psf_array, image_size)
-                self.data = place_source(xpix, ypix, flux, self.data, epsf, boxsize=bright_boxsize, psf_center=bright_psf_middle)
+                # epsf = interpolate_epsf(xpix, ypix, bright_psf_array, image_size)
+                self.data = place_source(xpix, ypix, flux, self.data, epsf_bright, boxsize=bright_boxsize, psf_center=bright_psf_middle)
+                #self._log("info", "Placing Bright Source with mag = {}".format(mag))
             elif mag < self.xbright_limit:
-                self.addHistory("Placing Extra Bright Source with mag = {}".format(mag))
-                self._log("info", "Placing Extra Bright Source with mag = {}".format(mag))
+                #self.addHistory("Placing Extra Bright Source with mag = {}".format(mag))
+                #self._log("info", "Placing Extra Bright Source with mag = {}".format(mag))
                 epsf = interpolate_epsf(xpix, ypix, xbright_psf_array, image_size)
-                self.data = place_source(xpix, ypix, flux, self.data, epsf, boxsize=xbright_boxsize, psf_center=xbright_psf_middle)
+                self.data = place_source(xpix, ypix, flux, self.data, epsf_xbright, boxsize=xbright_boxsize, psf_center=xbright_psf_middle)
 
     def cropToBaseSize(self):
         """

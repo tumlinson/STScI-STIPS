@@ -11,38 +11,11 @@ from stips.scene_module import SceneModule
 from stips.observation_module import ObservationModule
 import matplotlib.pyplot as plt 
 
-def gather_tables(sca_number):
-
-    #wildcard = 'SCA'+str(sca_number)+'/master_star_table_sca'+sca_number+'.fits'
-    wildcard = 'SCA??/master_star_table_sca?.fits'
-    print(wildcard)
-    filelist = glob.glob(wildcard)
-    print("There are : ", len(filelist), " files in the pile.")
-    print(filelist)
-
-    t0 = Table.read(filelist[0])
-    print(t0)
-
-    i = 0
-    for file in filelist[1:]:
-        print(file)
-        t_new = Table.read(file)
-        print(t_new)
-        t0 = vstack([t0, t_new])
-        print("Merged in Table : ", i, " name of : ", file)
-        i = i+1
-
-    t0.write('SCA'+scanumber+'/sim_stars_merged_SCA'+str(sca_number)+'.fits', overwrite=True)
-    print("Saved file : ", 'SCA'+str(scanumber)+'sim_stars_merged_SCA'+str(sca_number)+'.fits')
-
-    return t0
-
-
 def run_one_sca(sca_number, filter, suffix, nstars):
 
     wildcard = 'SCA'+str(sca_number) + '/sim_stars_????????_SCA'+str(sca_number)+'.fits'
-    wildcard = 'SCA'+str(sca_number) + '/master*.fits'
     wildcard = 'SCA*/master_star_table_sca*.fits'
+    wildcard = 'SCA'+str(sca_number) + '/master*.fits'
     print(wildcard)
 
     filelist = glob.glob(wildcard)
