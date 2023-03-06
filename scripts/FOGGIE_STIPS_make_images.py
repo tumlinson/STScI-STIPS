@@ -55,7 +55,7 @@ def run_one_sca(sca_number, filter, suffix, nstars):
             print("We are at file:",i+1," out of ", nn)
 
     psf_file = obm.addError()
-    fits_file, mosaic_file, params = obm.finalize(mosaic=True)
+    fits_file, mosaic_file, params = obm.finalize(mosaic=False)
 
 
 

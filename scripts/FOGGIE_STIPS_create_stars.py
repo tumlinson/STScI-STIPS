@@ -1,9 +1,8 @@
-import yt
+
 from foggie.utils.foggie_load import *
 import numpy as np
 from astropy.table import Table, vstack 
 import argparse
-import glob
 import copy 
 import os 
 
@@ -41,7 +40,7 @@ def prescreen_sca(stars, scanumber, obm):
     
     return screened_stars 
 
-def create_catalogs(streamfile, scanumber=1, rotangle=0., offset_ra=0., offset_dec=0., offset_pa=0., exptime=100000): 
+def create_catalogs(streamfile, scanumber=1, rotangle=0., offset_ra=0., offset_dec=0., offset_pa=0., exptime=100000, prescreen=True): 
 
     obs = {
      'instrument': 'WFI',
@@ -66,7 +65,9 @@ def create_catalogs(streamfile, scanumber=1, rotangle=0., offset_ra=0., offset_d
     stars['xx'] = stars['xx'] + 180. # This 180 degree offset is here to place streams in the "middle of the sky"
     stars['yy'] = stars['yy'] 
 
-    stars = prescreen_sca(stars, scanumber, obm)
+    if (prescreen): 
+        stars = prescreen_sca(stars, scanumber, obm)
+
     print(stars) 
 
     scm = SceneModule()
